@@ -13,6 +13,9 @@ Pulse Width Modulation (PWM) - "Robot Motion"
 
 ## Prelab
 
+### Schematic
+![alt test](https://github.com/sabinpark/ECE382_Lab6/blob/master/images/overall_schematic.jpg "overall schematic")
+
 Considering the hardware (timer subsystems, chip pinout, etc.)...
 * How will use the hardware (timer subsystems, chip pinout, etc.) to achieve robot control?
   * I will use the timer subsystems and PWM to send the appropriate signals to the motor driver chip. 
