@@ -20,11 +20,12 @@ Considering the hardware (timer subsystems, chip pinout, etc.)...
   * ...
 * Which pins will output which signals you need? 
   * Motor A:
-   * P1.1
-   * P1.2
+    * P1.0
+    * P1.1
   * Motor B:
-   * P2.0
-   * P2.1
+    * P2.0
+    * P2.1
+  * These pins were chosen arbitrarily
 * Which side of the motor will you attach these signals to? 
   * It does not matter--but I will keep the sides consistent for both motors
 * How will you use these signals to achieve forward / back / left / right movement?
