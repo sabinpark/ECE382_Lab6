@@ -15,9 +15,29 @@ Pulse Width Modulation (PWM) - "Robot Motion"
 
 Considering the hardware (timer subsystems, chip pinout, etc.)...
 * How will use the hardware (timer subsystems, chip pinout, etc.) to achieve robot control?
+  * Voltage regulator: this will be used to convert the 5V (from Vdd) to 3.3V used to power the MSP430
+  * Motor Driver Chip (SN754410): this will be used to convert the signals from the MSP430 and then amplify it for use with the motors
+  * ...
 * Which pins will output which signals you need? 
+  * Motor A:
+   * P1.1
+   * P1.2
+  * Motor B:
+   * P2.0
+   * P2.1
 * Which side of the motor will you attach these signals to? 
+  * It does not matter--but I will keep the sides consistent for both motors
 * How will you use these signals to achieve forward / back / left / right movement?
+  * Forward:
+   * Run the motors in opposite directions
+   * Since the motors are facing each other, this this will result in a forward movement
+  * Backward:
+   * Switch the power source and ground for both motors from *Forward*
+   * This is essentially the opposite of the *Forward* movement
+  * Left/Right:
+   * Run the motors in the same direction
+   * This results in the robot turning in place like a tank
+   * For whatever direction the robot moves for one configuration (let's say it moves LEFT), simply make the motors run in the opposite direction to get the other direction (RIGHT), and vice versa.
 
 Consider how you will setup the PWM subsytem to achieve this control...
 * What are the registers you'll need to use? 
