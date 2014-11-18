@@ -15,8 +15,6 @@ Pulse Width Modulation (PWM) - "Robot Motion"
 
 Considering the hardware (timer subsystems, chip pinout, etc.)...
 * How will use the hardware (timer subsystems, chip pinout, etc.) to achieve robot control?
-  * Voltage regulator: this will be used to convert the 5V (from Vdd) to 3.3V used to power the MSP430
-  * Motor Driver Chip (SN754410): this will be used to convert the signals from the MSP430 and then amplify it for use with the motors
   * ...
 * Which pins will output which signals you need? 
   * Motor A:
@@ -46,6 +44,12 @@ Consider how you will setup the PWM subsytem to achieve this control...
 * What's the initialization sequence you'll need?
 
 Consider what additional hardware you'll need (regulator, motor driver chip, decoupling capacitor, etc.) and how you'll configure / connect it.
+  * Voltage regulator: this will be used to convert the 5V (from Vdd) to 3.3V used to power the MSP430
+  * Motor Driver Chip (SN754410): this will be used to convert the signals from the MSP430 and then amplify it for use with the motors
+  * Decoupling Capacitor: the motors may fluctuate voltages and induce noise on the 5V line, causing the microcontroller to reset. Thus, the capacitors will be used to:
+    * ~100 uF across the 12V rail to supplement the current when the motor draw spikes
+    * ~0.1 uF across the 5V rail to smooth high frequency noise
+    * 10 pF between the RST pin and the GND to smooth noise to the RST pin (extremely sensitive to voltage fluctuations and may reset the MCU)
 
 Consider the interface you'll want to create to your motors. 
 * Do you want to move each motor invidiually (moveLeftMotorForward()) or do you want to move them together (moveRobotForward())?
