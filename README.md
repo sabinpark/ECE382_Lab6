@@ -30,15 +30,15 @@ Considering the hardware (timer subsystems, chip pinout, etc.)...
   * It does not matter--but I will keep the sides consistent for both motors
 * How will you use these signals to achieve forward / back / left / right movement?
   * Forward:
-   * Run the motors in opposite directions
-   * Since the motors are facing each other, this this will result in a forward movement
+    * Run the motors in opposite directions
+    * Since the motors are facing each other, this this will result in a forward movement
   * Backward:
-   * Switch the power source and ground for both motors from *Forward*
-   * This is essentially the opposite of the *Forward* movement
+    * Switch the power source and ground for both motors from *Forward*
+    * This is essentially the opposite of the *Forward* movement
   * Left/Right:
-   * Run the motors in the same direction
-   * This results in the robot turning in place like a tank
-   * For whatever direction the robot moves for one configuration (let's say it moves LEFT), simply make the motors run in the opposite direction to get the other direction (RIGHT), and vice versa.
+    * Run the motors in the same direction
+    * This results in the robot turning in place like a tank
+    * For whatever direction the robot moves for one configuration (let's say it moves LEFT), simply make the motors run in the opposite direction to get the other direction (RIGHT), and vice versa.
 
 Consider how you will setup the PWM subsytem to achieve this control...
 * What are the registers you'll need to use? 
