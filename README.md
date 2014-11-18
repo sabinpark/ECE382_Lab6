@@ -52,7 +52,15 @@ Consider what additional hardware you'll need (regulator, motor driver chip, dec
     * 10 pF between the RST pin and the GND to smooth noise to the RST pin (extremely sensitive to voltage fluctuations and may reset the MCU)
 
 Consider the interface you'll want to create to your motors. 
-* Do you want to move each motor invidiually (moveLeftMotorForward()) or do you want to move them together (moveRobotForward())?
+* Do you want to move each motor individually (moveLeftMotorForward()) or do you want to move them together (moveRobotForward())?
+  * I plan to move the two motors together
+  * The move methods I may need:
+    * moveRobotForward()
+    * moveRobotBackward()
+    * turnSmallRight()
+    * turnSmallLeft()
+    * turnBigRight()
+    * turnBigLeft()
 
 ## Lab
 
