@@ -11,6 +11,12 @@ Pulse Width Modulation (PWM) - "Robot Motion"
   * Small (< 45 degree) turn left/right
   * Large (> 45 dgree) turn left/right
 
+### Functionality Update
+|Functionality|Status|Date|
+|:-:-|:-:|:-:|
+|Required|Complete|21 November 2014|
+|A|In Progress|--|
+
 ## Prelab
 
 ### Schematic
