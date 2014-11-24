@@ -12,10 +12,10 @@ Pulse Width Modulation (PWM) - "Robot Motion"
   * Large (> 45 dgree) turn left/right
 
 ### Functionality Update
-|Functionality|Status|Date|
-|:-:-|:-:|:-:|
-|Required|Complete|21 November 2014|
-|A|In Progress|--|
+|Functionality|Status|Date|Instructor Check|
+|:-:-|:-:|:-:|:-:|
+|Required|Complete|21 November 2014|Checked by Capt Trimble and Dr. Coulston 24 Nov 14 (6th per.)|
+|A|Complete|24 Nov 2014|Checked by Capt Trimble and Dr. Coulston 24 Nov 14 (6th per.)|
 
 ## Prelab
 
