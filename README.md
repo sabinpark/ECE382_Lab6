@@ -14,8 +14,8 @@ Pulse Width Modulation (PWM) - "Robot Motion"
 ### Functionality Update
 |Functionality|Status|Date|Instructor Check|
 |:-:|:-:|:-:|:-:|
-|Required|Complete|21 NOV 2014|Capt Trimble and Dr. Coulston 24 Nov 14 (6th per.)|
-|A|Complete|24 NOV 2014|Capt Trimble and Dr. Coulston 24 Nov 14 (6th per.)|
+|Required|Complete|21 NOV 2014|Capt Trimble and Dr. Coulston 24 Nov 14 (6th period)|
+|A|Complete|24 NOV 2014|Capt Trimble and Dr. Coulston 24 Nov 14 (6th period)|
 
 ## Prelab
 
