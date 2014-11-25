@@ -1,44 +1,5 @@
 #include <msp430g2553.h>
-//#include <msp430.h>
 #include "ir_sensor.h"
-
-#define SHORT_DELAY					500000
-#define LONG_DELAY					1000000
-#define DELAY_360					1470000			// the delay it takes for (approximately) 360 degrees of rotation
-#define FULL_ROTATION				360				// constant to define 360 degrees
-
-// sets the PWN direction bits to output
-#define LEFT_PWN_ENABLE_SET_OUTPUT	P2DIR |= BIT2
-#define RIGHT_PWN_ENABLE_SET_OUTPUT	P2DIR |= BIT4
-// chooses the proper function for use with the timers
-#define LEFT_P2SEL_SET				P2SEL |= BIT2
-#define RIGHT_P2SEL_SET				P2SEL |= BIT4
-
-// left motor enable
-#define LEFT_ENABLE_SET_OUTPUT		P2DIR |= BIT0	// sets direction pin to output
-#define LEFT_ENABLE					P2OUT |= BIT0	// enable left motor
-#define LEFT_DISABLE				P2OUT &= ~BIT0	// disable left motor
-// right motor enable
-#define RIGHT_ENABLE_SET_OUTPUT		P2DIR |= BIT5	// sets direction pin to output
-#define RIGHT_ENABLE				P2OUT |= BIT5	// enable right motor
-#define RIGHT_DISABLE				P2OUT &= ~BIT5	// disable right motor
-
-// left motor direction
-#define LEFT_SET_OUTPUT				P2DIR |= BIT1	// sets direction pin to output
-#define LEFT_SET_CW					P2OUT &= ~BIT1	// left motor turns clockwise
-#define	LEFT_SET_CCW				P2OUT |= BIT1	// left motor turuns counter-clockwise
-// right motor direction
-#define RIGHT_SET_OUTPUT			P2DIR |= BIT3	// sets direction pin to output
-#define RIGHT_SET_CW				P2OUT &= ~BIT3	// right motor turns clockwise
-#define RIGHT_SET_CCW				P2OUT |= BIT3	// right motor turns counter-clockwise
-
-// left motor outmode
-#define LEFT_OM_HI					TA1CCTL1 = OUTMOD_3;
-#define LEFT_OM_LO					TA1CCTL1 = OUTMOD_7;
-// right motor outmode
-#define RIGHT_OM_HI					TA1CCTL2 = OUTMOD_3;
-#define RIGHT_OM_LO					TA1CCTL2 = OUTMOD_7;
-
 
 // IR defined constants
 int8	newIrPacket = FALSE;	// flag to check if there is a new IR packet
@@ -46,6 +7,7 @@ int16	packetData[48];			// array to hold packet data
 int8	packetIndex = 0;
 int32	irPacket;
 
+int		direction = FORWARD;
 
 /* PIN USES
  *
@@ -64,7 +26,7 @@ int32	irPacket;
 void main(void) {
 	initMSP430();							// Setup MSP to process IR and buttons
 
-//	WDTCTL=WDTPW+WDTHOLD; 				// stop WD
+//	WDTCTL=WDTPW+WDTHOLD; 					// stop WD
 
     // LEFT MOTOR PWM is OUTPUT and set to the TIMER mode
 	LEFT_PWN_ENABLE_SET_OUTPUT;				// P2.2 is associated with TA1CCR1
@@ -103,9 +65,9 @@ void main(void) {
     while (1) {
 
     	// Required Functionality Maneuver (without remote controller)
-//    	moveForward();
+//    	moveForward(1);
 //    	stop();
-//    	moveBackward();
+//    	moveBackward(1);
 //    	stop();
 //    	rotateRight(45);
 //    	stop();
@@ -115,13 +77,13 @@ void main(void) {
 //    	stop();
 //    	rotateRight(45);
 //    	stop();
-//    	rotateRight(90);
+//    	rotateRight(120);
 //    	stop();
-//    	rotateLeft(90);
+//    	rotateLeft(120);
 //    	stop();
-//    	rotateLeft(90);
+//    	rotateLeft(120);
 //    	stop();
-//    	rotateRight(90);
+//    	rotateRight(120);
 //    	stop();
 
     	// A Functionality (with remote controller)
@@ -131,152 +93,70 @@ void main(void) {
 			newIrPacket = FALSE;
 
 			switch(irPacket) {
-				case POWER:
+				case BTN_PWR:		// Signal ready to use
+					GREEN_ON;
+					RED_ON;
 					break;
-				case UP_1:					// 2
-					// green LED ON
-					P1OUT |= BIT6;
-					// red LED OFF
-					P1OUT &= ~BIT0;
-					moveForward();
+				case BTN_2:			// Move Forward
+					direction = FORWARD;
+					moveForward(1);
 					break;
-				case LEFT_1:				// 4
-					// red LED ON
-					P1OUT |= BIT0;
-					// green LED OFF
-					P1OUT &= ~BIT6;
-					rotateLeft(190);
-			    	_delay_cycles(LONG_DELAY);
+				case BTN_4:			// Rotate LEFT
+					rotateLeft(45);
+					checkDirection(direction);
+					break;
+				case BTN_5:			// Stop
+					direction = STOP;
 					stop();
 					break;
-				case SELECT:				// 5
-					stop();
+				case BTN_6:			// Rotate RIGHT
+					rotateRight(45);
+					checkDirection(direction);
 					break;
-				case RIGHT_1:				// 6
-					// green LED ON
-					P1OUT |= BIT6;
-					// red LED OFF
-					P1OUT &= ~BIT0;
-					rotateRight(290);
-					//stop();
+				case BTN_8:			// Move Backward
+					direction = BACKWARD;
+					moveBackward(1);
 					break;
-				case DOWN_1:				// 8
-					// red LED ON
-					P1OUT |= BIT0;
-					// green LED OFF
-					P1OUT &= ~BIT6;
-					moveBackward();
+				case BTN_1:			// Move NW
+					driveNW();
+					checkDirection(direction);
 					break;
-				case UP_2:					// CH +
-					// red LED ON
-					P1OUT |= BIT0;
+				case BTN_3:			// Move NE
+					driveNE();
+					checkDirection(direction);
 					break;
-				case DOWN_2:				// CH -
-					// red LED OFF
-					P1OUT &= ~BIT0;
+				case BTN_7:			// Move SW
+					driveSW();
+					checkDirection(direction);
 					break;
+				case BTN_9:			// Move SE
+					driveSE();
+					checkDirection(direction);
+					break;
+				case BTN_0:			// continuously rotates CCW
+					rotateLeft(45);
+					break;
+				case BTN_DASH:		// continuously rotates CW
+					rotateRight(45);
+					break;
+				case BTN_CH_HI:		// increase duty cycle
+					increaseDC();
+					break;
+				case BTN_CH_LO:		// decrease duty cycle
+					decreaseDC();
+					break;
+				case BTN_OK:		// resets the duty cycle back to normal
+					resetSignal();
 				default:
 					// do nothing
 					break;
 			}
 
-			//irPacket = 0;
-
 			initMSP430();
 		} // end A functionality
 
-    	_delay_cycles(LONG_DELAY);
     } // end loop
 } // end main
-
-void stop() {
-
-	LEFT_DISABLE;
-	RIGHT_DISABLE;
-
-	_delay_cycles(SHORT_DELAY);
-}
-
-// enables left and right PWM
-void go() {
-	LEFT_ENABLE;
-	RIGHT_ENABLE;
-}
-
-void moveForward() {
-
-	go();
-
-	LEFT_OM_HI;
-	RIGHT_OM_HI;
-
-	// LEFT MOTOR
-	LEFT_SET_CCW;	// set the direction of left motor (CCW)
-
-	// RIGHT MOTOR
-	RIGHT_SET_CW;
-
-	_delay_cycles(LONG_DELAY);
-}
-
-void moveBackward() {
-	go();
-
-	LEFT_OM_LO;
-	RIGHT_OM_LO;
-
-	// LEFT MOTOR
-	LEFT_SET_CW;
-
-	// RIGHT MOTOR
-	RIGHT_SET_CCW;
-
-	_delay_cycles(LONG_DELAY);
-}
-
-void rotateRight(int deg) {
-	go();
-
-	LEFT_OM_HI;
-	RIGHT_OM_LO;
-
-	// LEFT MOTOR
-	LEFT_SET_CCW;
-	// RIGHT MOTOR
-	RIGHT_SET_CCW;
-
-	int i;
-
-	for(i=0; i<deg; i++) {
-		_delay_cycles(DELAY_360/FULL_ROTATION);
-	}
-}
-
-void rotateLeft(int deg) {
-	go();
-
-	LEFT_OM_LO;
-	RIGHT_OM_HI;
-
-	// LEFT MOTOR
-	LEFT_SET_CW;
-	// RIGHT MOTOR
-	RIGHT_SET_CW;
-
-	int i;
-
-	for(i=0; i<deg; i++) {
-		_delay_cycles(DELAY_360/FULL_ROTATION);
-	}
-}
-
-void turnRight() {
-}
-
-void turnLeft() {
-
-}
-
 
 // -----------------------------------------------------------------------
 // In order to decode IR packets, the MSP430 needs to be configured to
@@ -306,7 +186,7 @@ void initMSP430() {
 	P2IE  |= BIT6;						// Enable PORT 2 interrupt on pin change
 
 	HIGH_2_LOW;
-//	P1DIR |= BIT0 | BIT6;				// Enable updates to the LED
+	P1DIR |= BIT0 | BIT6;				// Enable updates to the LED
 //	P1OUT &= ~(BIT0 | BIT6);			// And turn the LED off
 
 	TA0CCR0 = 0x8000;					// create a 16mS roll-over period
