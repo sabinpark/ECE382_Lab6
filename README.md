@@ -199,14 +199,62 @@ I played around with various delay values and inserted this one-liner between ea
 
 At this point I realized that my code was really messy and could be improved greatly in terms of readability and efficiency. First, I made various #define statements that translated the not-as-clear bit statements into more readable one-liners. For instance, instead of always calling `P2OUT |= BIT0` to enable to left motor, I would instead type `LEFT_ENABLE`. Here is the actual #define statement used for this particular example:
 ```
-#define LEFT_ENABLE					P2OUT |= BIT0	// enable left motor
+#define LEFT_ENABLE	P2OUT |= BIT0	// enable left motor
 ```
 
 Although I had to create a lot of these definitions, it was definitely worth it in the end (and while continuing to improve my code) because it made debugging so much easier.
 
-Inspired by C2
+I input a parameter in my functions that would allow my movement functions to delay for a user-designated amount of time. For instance, the rotateLeft() method may take in the parameter value of 180. The robot will rotate counter-clockwise with a delay that corresponds with the 180 degree rotation. Here is the rotateLeft() method:
 
+```
+/*
+ * turns the robot CCW
+ */
+void rotateLeft(int deg_delay) {
+	go();
 
+	LEFT_OM_LO;
+	RIGHT_OM_HI;
+
+	// LEFT MOTOR
+	LEFT_SET_CW;
+	// RIGHT MOTOR
+	RIGHT_SET_CW;
+
+	RED_ON;			// red LED ON
+	GREEN_OFF; 		// green LED OFF
+
+	int i;
+
+	switch(deg_delay) {
+	case 15:
+		_delay_cycles(DELAY_15);
+		break;
+	case 45:
+		_delay_cycles(DELAY_45);
+		break;
+	case 90:
+		_delay_cycles(DELAY_90);
+		break;
+	case 180:
+		_delay_cycles(DELAY_180);
+		break;
+	case 360:
+		_delay_cycles(DELAY_360);
+		break;
+	default:
+		for(i=0; i<deg_delay; i++) {
+			_delay_cycles(DELAY_360/DEG_360);
+		}
+	}
+}
+```
+
+I created this function with the appropriate delays based on the delay required for a full 360 degree rotation. I picked arbitrary values for the delay, debugged, and then tested the delay with the robot for both directions. Rinse and repeat until satisfied. One thing I noticed was that the imperfections of the robot caused the rotations to be different every time. One rotation may have been be slightly greater than 360 degrees, another may have been slightly less, and some were pretty much exactly 360 degrees. Since I could not get the precise 360 degrees that I wanted, I was satisfied enough with if the robot's rotations averaged 360 degrees in the long run. Using the 360 degrees delay as the basis of the function, I used simple algebra to rotate the robot various other degrees based on the user input.
+
+And of course, I ran into another problem. It turned out that the delay changes were not proportional to the change in degrees (input parameter). Therefore, if a *1000000* delay worked fine for 360 degrees, a delay of *500000* did not necessarily give me the 180 degrees I expected. In general, I got back less degrees than expected.
+
+I countered this problem by creating some case-switch statements with predefined and precallibrated delay values for a couple of important degree rotations. Specifically, I wanted my robot to be able to rotate 360, 180, 90, 45, and 15 degrees. I ended the case-switch statement with the original implementation of the function, which allows the user to input any value (other than the predefined ones mentioned above) and have the robot turn appropriately. I realized that this last part was not going to be too accurate, but I decided that there was no immediate downside of including this little bit of code. On the contrary, I could use this for various purposes such as having my robot rotate for a very long duration of time (but not infinitely) before stopping. 
 
 ### A Functionality
 
@@ -215,4 +263,8 @@ Inspired by C2
 ### A Functionality (debugging)
 
 ## Documentation
-None
+#### Prelab
+* None
+#### Lab
+* C2C Arneberg gave me the idea to create a parameter in my movement functions that would allow me to have more flexibility in determining the magnitude of the movement.
+* Dr. Coulston helped me identify an issue with the code that reads in the data packets using the remote controller; he also helped me realize that my issues with the IR sensor was not necessarily caused by noise from the motors
