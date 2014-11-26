@@ -256,7 +256,20 @@ And of course, I ran into another problem. It turned out that the delay changes 
 
 I countered this problem by creating some case-switch statements with predefined and precallibrated delay values for a couple of important degree rotations. Specifically, I wanted my robot to be able to rotate 360, 180, 90, 45, and 15 degrees. I ended the case-switch statement with the original implementation of the function, which allows the user to input any value (other than the predefined ones mentioned above) and have the robot turn appropriately. I realized that this last part was not going to be too accurate, but I decided that there was no immediate downside of including this little bit of code. On the contrary, I could use this for various purposes such as having my robot rotate for a very long duration of time (but not infinitely) before stopping. 
 
+In the end, my robot successfully achieved the required functionality.
+
 ### A Functionality
+
+A functionality required me to control my robot using an IR remote controller. At a minimum, I needed to make the robot move forward, backward, turn right, and turn left. I decided to use the same controller from the last lab especially since I already had the IR codes for the various buttons I would be using to control the robot. I used the APEX remote #8.
+
+All I had to do for the A functionality was to copy and paste my code from the previous lab. I retrived code for initiating the MSP430 and the code for the interrupts.
+
+I hooked up the IR sensor just like in the previous lab as well.
+
+[INSERT SCHEMATIC OF IR SENSOR]
+
+With the proper connections and coding, I built the code and ran the debugger. As expected, the robot read in the IR packets and moved corresponding to the the remote controller input. However, I did have a slight problem with the consistency of responses. Only about 1 out of 10 button inputs seemed to be reading correctly. Trying two different things, I was eventually able to solve this problem (for details please go to the debugging section).
+
 
 ## Debugging
 ### Required Functionality (debugging)
