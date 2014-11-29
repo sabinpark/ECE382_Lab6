@@ -268,12 +268,17 @@ I hooked up the IR sensor just like in the previous lab as well.
 
 [INSERT SCHEMATIC OF IR SENSOR]
 
-With the proper connections and coding, I built the code and ran the debugger. As expected, the robot read in the IR packets and moved corresponding to the the remote controller input. However, I did have a slight problem with the consistency of responses. Only about 1 out of 10 button inputs seemed to be reading correctly. Trying two different things, I was eventually able to solve this problem (for details please go to the debugging section).
+With the proper connections and coding, I built the code and ran the debugger. As expected, the robot read in the IR packets and moved corresponding to the the remote controller input. However, I did have a slight problem with the consistency of responses. Only about 1 out of 10 button inputs seemed to be reading correctly. Trying two different solutions, I was eventually able to solve this problem (for details please go to the debugging section).
+
 
 
 ## Debugging
 ### Required Functionality (debugging)
+* Initially forgot to set the direction of the pins to output, thus not affecting 
 ### A Functionality (debugging)
+* revised the code to take in packets differently
+* added in more capacitors and an extra IR sensor
+* re-calibrated the time delays
 
 ## Documentation
 #### Prelab
