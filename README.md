@@ -296,6 +296,7 @@ This seemed to work well and my robot became much more responsive. The real prob
 ## Documentation
 #### Prelab
 * None
+
 #### Lab
 * C2C Arneberg gave me the idea to create a parameter in my movement functions that would allow me to have more flexibility in determining the magnitude of the movement.
 * Dr. Coulston helped me identify an issue with the code that reads in the data packets using the remote controller; he also helped me realize that my issues with the IR sensor was not necessarily caused by noise from the motors
