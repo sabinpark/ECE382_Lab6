@@ -20,7 +20,6 @@ Pulse Width Modulation (PWM) - "Robot Motion"
 ## Prelab
 
 ### Schematic
-**UPDATE SCHEMATIC WITH PROPER CHANGES**
 ![alt test](https://github.com/sabinpark/ECE382_Lab6/blob/master/images/overall_schematic.jpg "overall schematic")
 
 Considering the hardware (timer subsystems, chip pinout, etc.)...
@@ -93,7 +92,7 @@ This in itself rotated my LEFT motor CCW (counter-clockwise). Just to experiment
 I then proceeded to hook up the appropriate *enable* pins to my RIGHT motor. Now both motors ran independently of each other. 
 Here is an image of how I hooked up my robot's circuit:
 
-[INSERT PICTURE OF BREADBOARD]
+![alt test](https://github.com/sabinpark/ECE382_Lab6/blob/master/images/robot_wiring.jpg "robot wiring")
 
 For simplicity, I started off with `TA1CCR0` of 100 and corresponding `TA1CCR1` and `TA1CCR2` values of 50. This gave me a 50% duty cycle and I did not have to worry about flipping the outmod.
 
