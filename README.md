@@ -97,7 +97,7 @@ Here is an image of how I hooked up my robot's circuit:
 For simplicity, I started off with `TA1CCR0` of 100 and corresponding `TA1CCR1` and `TA1CCR2` values of 50. This gave me a 50% duty cycle and I did not have to worry about flipping the outmod.
 
 #### Controlling the motors
-Next, I wanted to make my motors rotate in the reverse direction. Initially, I struggled to get any results at all and could not even get my motors to stop running despite taking out its enable connections. Thus, I knew that there was a problem within the code itself. I originally believed that toggling P2SEL would turn the motor ON and OFF. After all, it seemed to be responding to the toggles. However, after talking with Dr. Coulston and referencing the datasheets for the MSP430, I realized that P2SEL simply chose which type of function that will be used for P2. Unlike the other pins which were set to be GPIO pins, P2SEL had to be specifically designated and associated with the Timer A functions.
+Next, I wanted to make my motors rotate in the reverse direction. Initially, I struggled to get any results at all and could not even get my motors to stop running despite taking out its enable connections. Thus, I knew that there was a problem within the code itself. I originally believed that toggling P2SEL would turn the motor ON and OFF. After all, it seemed to be responding to the toggles. However, after talking with Dr. Coulston and referencing the datasheets for the MSP430, I realized that P2SEL simply chose which type of function will be used for P2. Unlike the other pins which were set to be GPIO pins, P2SEL had to be specifically designated and associated with the Timer A functions.
 
 Now back to my solution for the motor directions...
 Lo and behold, I eventually discovered that I needed to set the P2DIR (with the corresponding BIT) to an output before I could manipulate that particular bit. 
@@ -112,7 +112,7 @@ P2DIR |= BIT1	 // sets direction pin to output
 P2DIR |= BIT3	 // sets direction pin to output
 ```
 
-The above code simply sets P2DIR to a 1, which corresponds with OUTPUT. After setting these bits to read as an output, I was then able to adjust my motor's enable signal and direction.
+The above code simply sets P2DIR to a 1, which corresponds with an output. After setting these bits to read as an output, I was then able to adjust my motor's enable signal and direction.
 
 For my enable signals, 0 meant disable whereas 1 meant enable. 
 ```
@@ -133,7 +133,7 @@ P2OUT |= BIT1  // left motor turuns counter-clockwise
 
 // RIGHT motor
 P2OUT &= ~BIT3	// right motor turns clockwise
-P2OUT |= BIT3	 // right motor turns counter-clockwise
+P2OUT |= BIT3	// right motor turns counter-clockwise
 ```
 
 *NOTE*: You can hard-wire your robot's motors to turn in the reverse direction by simply switching the black and red inputs for a particular motor. This reverse the voltage difference and forces the current to flow in the opposite direction. Not too surprising, but interesting to know.
@@ -155,10 +155,10 @@ These methods are fairly self-explanatory, only requiring a few lines of code to
 ```
 void moveForward() {
 
- P2OUT |= BIT0	 // enable left motor
- P2OUT |= BIT5	 // enable right motor
+ P2OUT |= BIT0		// enable left motor
+ P2OUT |= BIT5		// enable right motor
  
- P2OUT |= BIT1	 // left motor turuns counter-clockwise
+ P2OUT |= BIT1		// left motor turuns counter-clockwise
  P2OUT &= ~BIT3		// right motor turns clockwise
 }
 ```
@@ -169,7 +169,7 @@ Since duty cycles for each motor was at 50%, I did not have to worry about adjus
 	_delay_cycles(SOME_VALUE);
 ```
 
-I played around with various delay values and inserted this one-liner between each movement function call. After a bit of tweaking, the robot proceeded back onto the dance floor and performed the proper movements much smoother than before. Here is the required functionality manuever:
+I played around with various delay values and inserted this one-liner between each movement function call. After a bit of tweaking, the robot proceeded back onto the dance floor and performed the proper movements much smoother than before. I had to time the different delays for how many degrees I wanted the robot to rotate (exmplained in more detail below). Here is the required functionality manuever:
 ```
 // Required Functionality Maneuver (without remote controller)
     	moveForward(1);
@@ -196,7 +196,7 @@ I played around with various delay values and inserted this one-liner between ea
 
 #### Cleaning up the code
 
-At this point I realized that my code was really messy and could be improved greatly in terms of readability and efficiency. First, I made various #define statements that translated the not-as-clear bit statements into more readable one-liners. For instance, instead of always calling `P2OUT |= BIT0` to enable to left motor, I would instead type `LEFT_ENABLE`. Here is the actual #define statement used for this particular example:
+At this point I realized that my code was really messy and could be improved greatly in terms of readability and efficiency. First, I made various `#define` statements that translated the not-as-clear bit statements into more readable one-liners. For instance, instead of always calling `P2OUT |= BIT0` to enable to left motor, I would instead type `LEFT_ENABLE`. Here is the actual `#define` statement used for this particular example:
 ```
 #define LEFT_ENABLE	P2OUT |= BIT0	// enable left motor
 ```
@@ -249,9 +249,9 @@ void rotateLeft(int deg_delay) {
 }
 ```
 
-I created this function with the appropriate delays based on the delay required for a full 360 degree rotation. I picked arbitrary values for the delay, debugged, and then tested the delay with the robot for both directions. Rinse and repeat until satisfied. One thing I noticed was that the imperfections of the robot caused the rotations to be different every time. One rotation may have been be slightly greater than 360 degrees, another may have been slightly less, and some were pretty much exactly 360 degrees. Since I could not get the precise 360 degrees that I wanted, I was satisfied enough with if the robot's rotations averaged 360 degrees in the long run. Using the 360 degrees delay as the basis of the function, I used simple algebra to rotate the robot various other degrees based on the user input.
+I created this function with the appropriate delays based on the delay required for a full 360 degree rotation. I picked arbitrary values for the delay, debugged, and then tested the delay with the robot for both directions. Rinse and repeat until satisfied. One thing I noticed was that the imperfections of the robot caused the rotations to be different every time. One rotation may have been slightly greater than 360 degrees, another may have been slightly less, and some were pretty much exactly 360 degrees. Since I could not get the precise 360 degrees that I wanted, I was satisfied enough if the robot's rotations averaged 360 degrees after several trials. Using the 360 degrees delay as the basis of the function, I used simple algebra to rotate the robot various other degrees based on the user input.
 
-And of course, I ran into another problem. It turned out that the delay changes were not proportional to the change in degrees (input parameter). Therefore, if a *1000000* delay worked fine for 360 degrees, a delay of *500000* did not necessarily give me the 180 degrees I expected. In general, I got back less degrees than expected.
+And of course, I ran into another problem. It turned out that the delay changes were not perfectly proportional to the change in degrees (input parameter). Therefore, if a *1000000* delay worked fine for 360 degrees, a delay of *500000* did not necessarily give me the 180 degrees I expected. In general, I got back less degrees than expected. This was probably due to the fact that there was an initial motor acceleration that I needed to consider.
 
 I countered this problem by creating some case-switch statements with predefined and precallibrated delay values for a couple of important degree rotations. Specifically, I wanted my robot to be able to rotate 360, 180, 90, 45, and 15 degrees. I ended the case-switch statement with the original implementation of the function, which allows the user to input any value (other than the predefined ones mentioned above) and have the robot turn appropriately. I realized that this last part was not going to be too accurate, but I decided that there was no immediate downside of including this little bit of code. On the contrary, I could use this for various purposes such as having my robot rotate for a very long duration of time (but not infinitely) before stopping. 
 
@@ -261,11 +261,13 @@ In the end, my robot successfully achieved the required functionality.
 
 A functionality required me to control my robot using an IR remote controller. At a minimum, I needed to make the robot move forward, backward, turn right, and turn left. I decided to use the same controller from the last lab especially since I already had the IR codes for the various buttons I would be using to control the robot. I used the APEX remote #8.
 
+![alt test](https://github.com/sabinpark/ECE382_Lab6/blob/master/images/APEX_remote.jpg "remote controller")
+
 All I had to do for the A functionality was to copy and paste my code from the previous lab. I retrieved code for initiating the MSP430 and the code for the interrupts.
 
 I hooked up the IR sensor just like in the previous lab as well.
 
-[INSERT SCHEMATIC OF IR SENSOR]
+![alt test](https://github.com/sabinpark/ECE382_Lab6/blob/master/images/ir_sensor.PNG "ir sensor hookup")
 
 With the proper connections and coding, I built the code and ran the debugger. As expected, the robot read in the IR packets and moved corresponding to the the remote controller input. However, I did have a slight problem with the consistency of responses. Only about 1 out of 10 button inputs seemed to be reading correctly. Trying two different solutions, I was eventually able to solve this problem (for details please go to the debugging section).
 
