@@ -415,6 +415,9 @@ void resetSignal() {
 	RED_ON;							// red LED ON
 }
 
+/*
+ * checks the direction the robot moved last (forward, backward, still)
+ */
 void checkDirection(int direction) {
 	if(direction == FORWARD) {
 		moveForward(1);

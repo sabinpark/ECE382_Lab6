@@ -1,3 +1,10 @@
+/*
+ * ir_sensor.h
+ *
+ *  Created on: Nov 24, 2014
+ *      Author: C16Sabin.Park
+ */
+
 #include <msp430g2553.h>
 #include "ir_sensor.h"
 
